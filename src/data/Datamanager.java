@@ -10,6 +10,10 @@ public class Datamanager
         
         }
     
+    //=====================================================================
+    //=====================================================================
+    //=====================================================================    
+    
     public ArrayList <TimeValue> get_before_array()
         {
         ArrayList <TimeValue> before_list = new ArrayList();    
@@ -39,7 +43,10 @@ public class Datamanager
         return before_list;
         }
     
-
+    //=====================================================================
+    //=====================================================================
+    //=====================================================================
+    
     public ArrayList <TimeValue> get_after_array()
         {
         ArrayList <TimeValue> after_list = new ArrayList();   
@@ -68,5 +75,77 @@ public class Datamanager
         
         return after_list;
         }
+
+    //=====================================================================
+    //=====================================================================
+    //=====================================================================
     
+    private ArrayList <TimeValue> calced_parabol_list = new ArrayList();
+    private boolean calced_parabol_list_present = false;
+    
+    public void add_to_calced_parabol_list(double date, double calcedValue) 
+        {
+        calced_parabol_list.add(new TimeValue(date, calcedValue) );
+        calced_parabol_list_present = true;
+        }
+    
+    public ArrayList <TimeValue> get_calced_parabol_list()
+        {
+        return calced_parabol_list;
+        }
+    
+    public boolean is_calced_parabol_list_present() 
+        {
+        return calced_parabol_list_present;
+        }
+    
+    //=====================================================================
+    //=====================================================================
+    //=====================================================================    
+
+    private ArrayList <TimeValue> calced_exponential_list = new ArrayList();
+    private boolean calced_exponential_list_present = false;
+    
+    public void add_to_calced_exponential_list(double date, double calcedValue) 
+        {
+        calced_exponential_list.add(new TimeValue(date, calcedValue) );
+        calced_exponential_list_present = true;
+        }
+    
+    public ArrayList <TimeValue> get_calced_exponential_list()
+        {
+        return calced_exponential_list;
+        }
+    
+    public boolean is_calced_exponential_list_present() 
+        {
+        return calced_exponential_list_present;
+        }
+    
+    //=====================================================================
+    //=====================================================================
+    //=====================================================================      
+    
+    private ArrayList <TimeValue> calced_naturalLogarithm_list = new ArrayList();
+    private boolean calced_naturalLogarithm_list_present = false;
+    
+    public void add_to_calced_naturalLogarithm_list(double date, double calcedValue) 
+        {
+        calced_naturalLogarithm_list.add(new TimeValue(date, calcedValue) );
+        calced_naturalLogarithm_list_present = true;
+        }
+    
+    public ArrayList <TimeValue> get_calced_naturalLogarithm_list()
+        {
+        return calced_naturalLogarithm_list;
+        }
+    
+    public boolean is_calced_naturalLogarithm_list_present() 
+        {
+        return calced_naturalLogarithm_list_present;
+        }
+
+    //=====================================================================
+    //=====================================================================
+    //=====================================================================  
     }

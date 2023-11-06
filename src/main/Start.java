@@ -1,16 +1,21 @@
 package main;
 
-/**
- *
- * @author arnoud
- */
-public class Start {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
+public class Start 
+    {
+    @SuppressWarnings("CallToPrintStackTrace")
+    public static void main(String[] args) 
+        {
+        try {
+            MainEngine mainengine = new MainEngine();
+            
+            Thread.sleep(5000);
+            
+            mainengine.start();
+            } 
+        catch (InterruptedException ex) 
+            {
+            ex.printStackTrace();
+            }
+        }
     
 }
