@@ -12,7 +12,7 @@ import org.apache.commons.math3.analysis.MultivariateVectorFunction;
 //  ======================================================= 
 //  ======================================================= 
 
-public class NatualLogaritmeFunction 
+public class ToTheFourthFunction 
     {	
     // Member variables
     private final List<Double> x_list;
@@ -23,7 +23,7 @@ public class NatualLogaritmeFunction
      * @param _x_list	input data
      * @param _y_list	target data
      */
-    public NatualLogaritmeFunction(List<Double> _x_list, List<Double> _y_list) 
+    public ToTheFourthFunction(List<Double> _x_list, List<Double> _y_list) 
         {
         x_list = _x_list;
         y_list = _y_list;
@@ -49,12 +49,9 @@ public class NatualLogaritmeFunction
 //  ======================================================= 
 //  ======================================================= 
 //  ======================================================= 
-    /**
-     * Define model function and return values
-     * @return	return the values of model function by input data
-     */
+
     @SuppressWarnings("Convert2Lambda")
-    public MultivariateVectorFunction retMVF() 
+    public MultivariateVectorFunction retMVF_parabole() 
         {
 	return new MultivariateVectorFunction() 
             {
@@ -63,8 +60,8 @@ public class NatualLogaritmeFunction
                 {
 		double[] values = new double[x_list.size()];
 		for (int i = 0; i < values.length; ++i) 
-                    {
-		    values[i] = (variables[0] * x_list.get(i) + variables[1]) * x_list.get(i) + variables[2];
+                    {                        
+                    values[i] = (variables[0] * x_list.get(i) + variables[1]) * x_list.get(i) + variables[2];
 		    }
 		return values;
 		}			
@@ -75,11 +72,7 @@ public class NatualLogaritmeFunction
 //  ======================================================= 
 //  ======================================================= 
     
-    /**
-     * Return the jacobian of the model function
-     * @return	return the jacobian
-     */
-    public MultivariateMatrixFunction retMMF() 
+    public MultivariateMatrixFunction retMMF_parabole() 
         {
     	return new MultivariateMatrixFunction() 
             {
@@ -110,6 +103,8 @@ public class NatualLogaritmeFunction
                 }	
             };
         }
+        
+
 //  ======================================================= 
 //  ======================================================= 
 //  =======================================================     

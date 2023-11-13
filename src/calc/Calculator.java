@@ -6,7 +6,10 @@ import data.Datamanager;
 import data.TimeValue;
 import helpers.CommonUtilities;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.fitting.leastsquares.LeastSquaresBuilder;
 import org.apache.commons.math3.fitting.leastsquares.LeastSquaresOptimizer;
@@ -32,8 +35,8 @@ public class Calculator
     public void calc() 
         {           
         map_parabol(10);
-//      map_exponential(10);
-//      map_natural_logarithm(10);
+        map_exponential(10);
+        map_tothefourth(10);
         }
     
 //  ======================================================= 
@@ -42,6 +45,8 @@ public class Calculator
     
     private void map_parabol(int _nr_off_ticks_after_to_check )     // Ensure the window size is odd and centered around the peak index
         {
+        System.out.println("map_parabol");
+
         List<Double> x = new ArrayList<>();
         List<Double> yValues = new ArrayList<>();
 
@@ -115,6 +120,10 @@ public class Calculator
 //    //y=a⋅exp(b⋅t)+c
     private void map_exponential(int _nr_off_ticks_after_to_check )     // Ensure the window size is odd and centered around the peak index
         {
+        System.out.println("map_exponential");
+
+        double substraction = 2459145.5;
+        
         List<Double> x = new ArrayList<>();
         List<Double> yValues = new ArrayList<>();
 
@@ -122,7 +131,7 @@ public class Calculator
         for (int i = 0; i < _nr_off_ticks_after_to_check; i++)
             {
             TimeValue eod = afterEventData.get(i);
-            x.add(eod.date);
+            x.add(eod.date -  substraction);
             yValues.add(eod.value);
             
             obs.add(eod.date, eod.value);
@@ -135,7 +144,6 @@ public class Calculator
                 .target(qf.calculateTarget())
                 .maxEvaluations(100)    // set upper limit of evaluation time       
                 .maxIterations(1000)    // set upper limit of iteration time
-                //.weight(obs.toListOfWeights())
                 .start(new double[]{1.0, 0.1}) // Initial parameter guesses
                 .build();
 
@@ -143,56 +151,98 @@ public class Calculator
         LeastSquaresOptimizer optimizer = new LevenbergMarquardtOptimizer();
         Optimum optimum = optimizer.optimize(problem);
 
-        double fittedA = optimum.getPoint().getEntry(0);
-        double fittedB = optimum.getPoint().getEntry(1);
+        double a = optimum.getPoint().getEntry(0);
+        double b = optimum.getPoint().getEntry(1);
         
-        System.out.println("A: " + fittedA);
-        System.out.println("B: " + fittedB);
+        System.out.println("A: " + a);
+        System.out.println("B: " + b);
+        
+        List<Double> predictedValues = new ArrayList<>();
+        
+        for (int i = 0; i < _nr_off_ticks_after_to_check; i++) 
+            {
+            TimeValue eod = afterEventData.get(i);    
+            double date = eod.date;  
+
+            double calcdate = date - substraction;
+            double calcedValue = a * Math.exp(b * calcdate);
+            
+            datamanager.add_to_calced_exponential_list(date, calcedValue);
+
+            predictedValues.add(calcedValue);
+            }
+        
+        double meanY = CommonUtilities.calculateMean(yValues);                  // Calculate the mean of the observed values
+        double sst = CommonUtilities.calculateSST(yValues, meanY);              // Calculate the total sum of squares (SST) 
+        double sse = CommonUtilities.calculateSSE(yValues, predictedValues);    // Calculate the residual sum of squares (SSE)
+        double rSquared = 1 - (sse / sst);                                      // Calculate R-squared (coefficient of determination)
+
+        System.out.println("R-squared value: " + rSquared);// Print the R-squared value   
+        System.out.println("Stop para");
         }
 
 //  ======================================================= 
 //  ======================================================= 
 //  ======================================================= 
     
-//    private void map_natural_logarithm(int _nr_off_ticks_after_to_check )     // Ensure the window size is odd and centered around the peak index
-//        {
+    private void map_tothefourth(int _nr_off_ticks_after_to_check )     // Ensure the window size is odd and centered around the peak index
+        {
+        System.out.println("map_parabol");
+        
+        List<Double> x = new ArrayList<>();
+        List<Double> yValues = new ArrayList<>();
+        
+        WeightedObservedPoints points = new WeightedObservedPoints();
+        for (int i = 0; i < _nr_off_ticks_after_to_check; i++)
+            {
+            TimeValue eod = afterEventData.get(i);
+            
+            x.add(eod.date);// -  substraction);
+            yValues.add(eod.value);
+            
+            points.add(eod.date,  eod.value);
+            }
+        
+        PolynomialCurveFitter curveFitter = PolynomialCurveFitter.create(4);
 
-//                
-//        WeightedObservedPoints after_points = new WeightedObservedPoints();       
-//        
-//        for (int i = 0; i < _nr_off_ticks_after_to_check; i++)
-//            {
-//            Entity_EOD eod = ticklist_afterEvent.get(i);
-//            after_points.add(eod.datetime, eod.lasttick_close);
-//            }
-//        // Fit a logarithmic curve (y = a * ln(x) + b) to the data points
-//        PolynomialCurveFitter fitter = PolynomialCurveFitter.create(1); // Logarithmic curve (1st degree)
-//        double[] coefficients = fitter.fit(after_points.toList());
-//
-//        // Check if the fit is good enough (e.g., based on the threshold)
-//        double a = coefficients[0]; // Coefficient for a * ln(x)
-//        double b = coefficients[1]; // Constant term
-//
-//        for (int i = 0; i < _nr_off_ticks_after_to_check; i++) 
-//            {
-//            Entity_EOD eod = ticklist_afterEvent.get(i);    
-//            double date = eod.datetime;  
-//                
-//            double calcedValue = (a *  Math.log(date)) + b;
-//            _quantify_object.add_to_ticklist_calced_naturalLogarithm(date, calcedValue);
-//            }
-//        
-//        // You can define your criteria for determining if it's a natural logarithm function here.
-//        // For example, you can check if 'a' is not zero and 'b' is close to the expected constant.
-//
-//        //System.out.println("NaturalLogarithm: " + Math.abs(a) + " " + Math.abs(b));
-//        
-//        //return (Math.abs(a) > threshold) && (Math.abs(b) < threshold); // Adjust the threshold as needed
-     //   }
+        double[] coef = curveFitter.fit(points.toList());
+        
+       System.out.println(Arrays.toString(coef)); 
+        
+       PolynomialFunction pf = new PolynomialFunction(coef);
+       
+         List<Double> predictedValues = new ArrayList<>();
+        
+          
+//        double a = coef[4];
+//        double b = coef[3];
+//        double c = coef[2];
+//        double d = coef[1];
+//        double e = coef[0];
+         
+        for (int i = 0; i < _nr_off_ticks_after_to_check; i++) 
+            {
+            TimeValue eod = afterEventData.get(i);    
+            double date = eod.date;  
 
+           // double calcdate = date;
+           // double calcedValue =  (a * date * date * date * date) + (b * date * date * date) + (c * date * date) + (d * date) + (e);                      //
+            double calcedValue = pf.value(date);
+            
+            datamanager.add_to_calced_naturalLogarithm_list(date, calcedValue);
 
- //  ======================================================= 
-//  ======================================================= 
-//  ======================================================= 
-  
+            predictedValues.add(calcedValue);
+            }
+       
+        double meanY = CommonUtilities.calculateMean(yValues);                  // Calculate the mean of the observed values
+        double sst = CommonUtilities.calculateSST(yValues, meanY);              // Calculate the total sum of squares (SST) 
+        double sse = CommonUtilities.calculateSSE(yValues, predictedValues);    // Calculate the residual sum of squares (SSE)
+        double rSquared = 1 - (sse / sst);                                      // Calculate R-squared (coefficient of determination)
+
+        System.out.println("R-squared value: " + rSquared);// Print the R-squared value   
+       
+        
+       
+        }
+    
     }
