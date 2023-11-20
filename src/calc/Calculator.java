@@ -5,6 +5,9 @@ import calc.helpers.QuadraticParabolicFunction;
 import data.Datamanager;
 import data.TimeValue;
 import helpers.CommonUtilities;
+import io.binroot.regression.CurveFitter;
+import static io.binroot.regression.CurveFitter.POLY2;
+import static io.binroot.regression.CurveFitter.POWER;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,11 +53,17 @@ public class Calculator
         List<Double> x = new ArrayList<>();
         List<Double> yValues = new ArrayList<>();
 
+//        double x1[] = new double[_nr_off_ticks_after_to_check];
+//        double y1[] = new double[_nr_off_ticks_after_to_check];
+        
         for (int i = 0; i < _nr_off_ticks_after_to_check; i++)
             {
             TimeValue eod = afterEventData.get(i);
             x.add(eod.date);
+            //x1[i] = eod.date; 
+            
             yValues.add(eod.value);
+            //y1[i] = eod.value;
             }
         
         QuadraticParabolicFunction qf = new QuadraticParabolicFunction(x,yValues);
@@ -82,18 +91,34 @@ public class Calculator
             double b = optimalValues[1]; // Coefficient for x term
             double c = optimalValues[2]; // Constant term
             
-            System.out.println("A: " + a);
-            System.out.println("B: " + b);
-            System.out.println("C: " + c);
+            System.out.println("A0: " + a);
+            System.out.println("B0: " + b);
+            System.out.println("C0: " + c);
             
+//            CurveFitter curveFitter = new CurveFitter(x1, y1);
+//            curveFitter.doFit(CurveFitter.POLY3);
+//            double[] params = curveFitter.getParams();
+//
+//            double a1 = params[2];
+//            double b1 = params[1];
+//            double c1 = params[0];    
+//            
+//            System.out.println("A1: " + a1);
+//            System.out.println("B1: " + b1);
+//            System.out.println("C1: " + c1);
+////            
+//            
             List<Double> predictedValues = new ArrayList<>();
 
             for (int i = 0; i < _nr_off_ticks_after_to_check; i++) 
                 {
                 TimeValue eod = afterEventData.get(i);    
-                double date = eod.date;  
+                double date = eod.date; 
 
                 double calcedValue = (a * date * date) + (b * date) + c;
+                
+                //double calcedValue = curveFitter.f(CurveFitter.POLY3, params, date);
+                
                 datamanager.add_to_calced_parabol_list(date, calcedValue);
 
                 predictedValues.add(calcedValue);

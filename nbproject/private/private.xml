@@ -3,10 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/arnoud/workspaces/NetBeansProjects/CalcExample/src/calc/helpers/ToTheFourthFunction.java</file>
-            <file>file:/home/arnoud/workspaces/NetBeansProjects/CalcExample/src/calc/helpers/ExponantialHelperFunction.java</file>
+            <file>file:/home/arnoud/workspaces/NetBeansProjects/CalcExample/src/Test.java</file>
             <file>file:/home/arnoud/workspaces/NetBeansProjects/CalcExample/src/calc/Calculator.java</file>
-            <file>file:/home/arnoud/workspaces/NetBeansProjects/CalcExample/src/data/Datamanager.java</file>
+            <file>file:/home/arnoud/workspaces/NetBeansProjects/CalcExample/src/io/binroot/regression/CurveFitter.java</file>
         </group>
     </open-files>
 </project-private>
